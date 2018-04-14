@@ -3,8 +3,9 @@ import "../MyStyle/MyCss.css";
 import Header from "./Header";
 import TodoForm from "./TodoForm";
 import Todolist from "./Todolist";
+import {Redirect} from "react-router-dom"
 import {fetchTodos, createTodo,deleteTodos,toggleTodo} from "../service/APIService";
-import LoginPage from "./Login";
+
 
 
 class App extends Component {
@@ -14,6 +15,11 @@ class App extends Component {
     };
 
     componentDidMount() {
+        const {auth} = this.props;
+
+        if(!auth)
+            return;
+
         this.fetchListTodos();
     }
 
@@ -31,7 +37,12 @@ class App extends Component {
 
     render() {
 
-        const todos = this.state;
+        const {auth} = this.props;
+        const {todos} = this.state;
+
+        if(!auth){
+            return <Redirect to="/Login"/>
+        }
         return (
             <div>
                 <Header/>

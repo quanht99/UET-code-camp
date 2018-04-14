@@ -1,48 +1,107 @@
+import {getToken} from "./StorageServices";
+
+
+
 export const fetchTodos = () => {
-    return fetch('https://uetcc-todo-app.herokuapp.com/draft')
-        .then(response => {
-            return response.json()
-        });
+    return _createAuthRequets({
+        route: '/todos'
+    });
 };
 
+
 export const createTodo = (text) => {
-    const url = 'https://uetcc-todo-app.herokuapp.com/draft';
-    const request = new Request(url, {
+    return _createAuthRequets({
+        route: '/todos',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         method: 'POST',
         body: JSON.stringify({
             title: text
         })
     });
-
-    return fetch(request)
-        .then(response => {
-            return response.json();
-        });
 };
 
 export const deleteTodos = (id) => {
-    const url = 'https://uetcc-todo-app.herokuapp.com/draft/' + id;
-const request = new Request(url, {
-    method: 'DELETE'
-});
-
-return fetch(request)
-    .then(response => {
-        return response.json();
+    return _createAuthRequets({
+        route: `/todos/${id}`,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
     });
 };
 
 export const toggleTodo = (id) => {
-    const url = `https://uetcc-todo-app.herokuapp.com/draft/${id}/toggle`;
-    const request = new Request(url, {
-        method: 'POST'
+    return _createAuthRequets({
+        route: `/todos/${id}/toggle`,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: 'POST',
     });
+};
+
+const BASE_URL = 'https://uetcc-todo-app.herokuapp.com';
+
+const _createRequest = (args) => {
+    const {route} = args;
+    delete args.route;
+
+    const url = BASE_URL + route;
+    const request = new Request(url, args);
 
     return fetch(request)
-        .then(response => {
-            return response.json();
-        });
+        .then(_handleResponse);
+};
+
+const _createAuthRequets = (args) => {
+    const token = getToken();
+
+    const defaultHeaders = {
+        'Authorization': token
+    };
+
+    const {headers} = args;
+
+    return _createRequest({
+        ...args,
+        headers: {
+            ...defaultHeaders,
+            ...headers,
+        }
+    });
+};
+
+const _handleResponse = (response) => {
+    return response.json();
+};
+
+export const register = ({email, password, name}) => {
+    return _createRequest({
+        route: '/register',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email,
+            password,
+            name,
+        })
+    });
+};
+
+export const login = ({email, password}) => {
+    return _createRequest({
+        route: '/login',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email,
+            password,
+        })
+    });
 };

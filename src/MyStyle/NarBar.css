@@ -28,3 +28,28 @@ ul.NavBar {
 .NavBar .active {
     background-color: #4CAF50;
 }
+
+.login  {
+    margin-left : 1375px;
+
+}
+
+.inputLOG_REG input {
+    font-size: 30px;
+    width: 100%;
+    margin: 10px;
+    padding: 10px;
+}
+
+.inputLOG_REG button {
+    font-size: 50px;
+    margin-left : 690px;
+}
+
+
+.Log_Reg_Header{
+    font-size: 50px;
+    box-sizing: border-box;
+    text-align: center;
+    background: blue;
+}
